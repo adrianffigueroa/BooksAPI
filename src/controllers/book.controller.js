@@ -3,7 +3,6 @@ const Book = require('../models/book.model')
 const getAllBooks = async (req, res) => {
   try {
     const books = await Book.find()
-    console.log('GET ALL', books)
     if (books.length === 0) {
       return res.status(204).json([])
     }
@@ -50,6 +49,13 @@ const getBookById = async (req, res) => {
 
 const updateBook = async (req, res) => {
   const { id } = req?.params
+  const validKeys = ['title', 'author', 'genre', 'publication_date']
+  for (const key of Object.keys(req.body)) {
+    if (!validKeys.includes(key)) {
+      console.log('Uno de los campos no coincide')
+      return res.status(404).json({ message: 'mala peticion' })
+    }
+  }
   try {
     const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
       new: true,
